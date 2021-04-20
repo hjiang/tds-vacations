@@ -4,7 +4,7 @@ dotenv.config();
 import express from 'express';
 import LC from 'leanengine';
 
-import api_route from './api/index.js';
+import api_route from './api.js';
 import { startBoltApp } from './slack.js';
 
 const slackApp = await startBoltApp();
