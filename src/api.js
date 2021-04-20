@@ -5,7 +5,7 @@ const router = express.Router();
 const Vacation = LC.Object.extend('Vacation');
 
 const extractVacationInfo = (text) => {
-  matches = [...text.matchAll(/[0-9\/]{10}/g)];
+  const matches = [...text.matchAll(/[0-9\/]{10}/g)];
   if (matches.length !== 2) return {};
   const startDate = new Date(matches[0][0]);
   const endDate = new Date(matches[1][0]);
@@ -17,7 +17,6 @@ const extractVacationInfo = (text) => {
 };
 
 router.post('/email-hook', async (req, res) => {
-  console.log(req.body);
   // 您好： LeanCloud 部门的 发起了 xxxx 申请 休假 ，申请时间段为 2021/04/21 2021/04/21 ，时长为 0.5 天，请知晓。
   const text = req.body['stripped-text'];
   const { startDate, endDate } = extractVacationInfo(text);
@@ -27,7 +26,7 @@ router.post('/email-hook', async (req, res) => {
     return;
   }
 
-  vacation = new Vacation();
+  const vacation = new Vacation();
   await vacation.save({ name, startDate, endDate });
 
   res.status(200).end();
