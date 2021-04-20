@@ -19,7 +19,7 @@ const extractVacationInfo = (text) => {
 router.post('/email-hook', async (req, res) => {
   // 您好： LeanCloud 部门的 发起了 xxxx 申请 休假 ，申请时间段为 2021/04/21 2021/04/21 ，时长为 0.5 天，请知晓。
   const text = req.body['stripped-text'];
-  const { startDate, endDate } = extractVacationInfo(text);
+  const { name, startDate, endDate } = extractVacationInfo(text);
   if (!name || !startDate || !endDate) {
     console.err(`Received unexpected email: ${text}`);
     res.status(200).end();
