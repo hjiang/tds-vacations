@@ -4,6 +4,11 @@ import LC from 'leanengine';
 const Vacation = LC.Object.extend('Vacation');
 
 const handleVacation = async ({ say }) => {
+  try {
+    await say('收到，这就去查一下 ...');
+  } catch (e) {
+    console.error(e);
+  }
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const query = new LC.Query('Vacation');
@@ -12,10 +17,10 @@ const handleVacation = async ({ say }) => {
   try {
     const results = await query.find();
     if (results.length === 0) {
-      await say('大家都在。一颗赛艇！');
+      await say('今天大家都在干活！');
       return;
     } else {
-      var resp = '今天缺席的常委有：\n';
+      var resp = '今天有这些同事在休假中：\n';
       for (const result of results) {
         const name = result.get('name');
         const startDate = result.get('startDate').toDateString();
@@ -27,7 +32,7 @@ const handleVacation = async ({ say }) => {
   } catch (e) {
     console.error(e);
     try {
-      await say(`查询错误。I am angry!! ${e.code}: ${e.message}`);
+      await say(`查询错误: ${e.code}: ${e.message}`);
     } catch (e) {
       console.error(e);
     }
