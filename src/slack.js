@@ -25,8 +25,12 @@ const handleVacation = async ({ say }) => {
       await say(resp);
     }
   } catch (e) {
-    console.err(e);
-    await say(`查询错误。I am angry!! ${e.code}: ${e.message}`);
+    console.error(e);
+    try {
+      await say(`查询错误。I am angry!! ${e.code}: ${e.message}`);
+    } catch (e) {
+      console.error(e);
+    }
   }
 };
 

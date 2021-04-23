@@ -21,7 +21,7 @@ router.post('/email-hook', async (req, res, next) => {
   const text = req.body['stripped-text'];
   const { name, startDate, endDate } = extractVacationInfo(text);
   if (!name || !startDate || !endDate) {
-    console.err(`Received unexpected email: ${text}`);
+    console.error(`Received unexpected email: ${text}`);
     res.status(200).end();
     return;
   }
