@@ -16,7 +16,7 @@ const extractVacationInfo = (text) => {
   return { name, startDate, endDate };
 };
 
-router.post('/email-hook', async (req, res) => {
+router.post('/email-hook', async (req, res, next) => {
   // 您好： LeanCloud 部门的 发起了 xxxx 申请 休假 ，申请时间段为 2021/04/21 2021/04/21 ，时长为 0.5 天，请知晓。
   const text = req.body['stripped-text'];
   const { name, startDate, endDate } = extractVacationInfo(text);
@@ -26,8 +26,12 @@ router.post('/email-hook', async (req, res) => {
     return;
   }
 
-  const vacation = new Vacation();
-  await vacation.save({ name, startDate, endDate });
+  try {
+    const vacation = new Vacation();
+    await vacation.save({ name, startDate, endDate });
+  } catch (e) {
+    next(e);
+  }
 
   res.status(200).end();
 });

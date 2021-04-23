@@ -17,7 +17,6 @@ const handleVacation = async ({ say }) => {
     } else {
       var resp = '今天缺席的常委有：\n';
       for (const result of results) {
-        console.log(result);
         const name = result.get('name');
         const startDate = result.get('startDate').toDateString();
         const endDate = result.get('endDate').toDateString();
