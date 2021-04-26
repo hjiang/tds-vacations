@@ -7,7 +7,10 @@ import LC from 'leanengine';
 import api_route from './api.js';
 import { startBoltApp } from './slack.js';
 
-const slackApp = await startBoltApp();
+if (process.env.ENABLE_SLACK_BOT) {
+  console.log('Starting slack bot ...');
+  await startBoltApp();
+}
 
 LC.init({
   appId: process.env.LEANCLOUD_APP_ID,
