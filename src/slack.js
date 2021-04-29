@@ -53,7 +53,7 @@ const handleVacation = async ({ say }) => {
   }
 };
 
-const turingBotAnswer = async (textInput) => {
+const turingBotAnswer = async (message) => {
   const apiKey = process.env.TURING_BOT_API_KEY;
   const result = await axios({
     method: 'post',
@@ -62,12 +62,13 @@ const turingBotAnswer = async (textInput) => {
       reqType: 0,
       perception: {
         inputText: {
-          text: textInput
+          text: message.text
         }
       },
       userInfo: {
         apiKey: apiKey,
-        userId: Math.random().toString(36).substring(2, 15)
+        userId: message.user,
+        groupId: message.team
       }
     }
   });
@@ -98,7 +99,7 @@ export const startBoltApp = async () => {
     if (message.text.indexOf('vacation') >= 0) return;
     console.dir(message);
     try {
-      const answer = await turingBotAnswer(message.text);
+      const answer = await turingBotAnswer(message);
       if (answer) {
         await say(answer);
       } else {
