@@ -1,5 +1,6 @@
 import bolt from '@slack/bolt';
 import LC from 'leanengine';
+import axios from 'axios';
 
 const Vacation = LC.Object.extend('Vacation');
 
