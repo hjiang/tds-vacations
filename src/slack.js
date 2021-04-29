@@ -39,6 +39,36 @@ const handleVacation = async ({ say }) => {
   }
 };
 
+const externalRobotAnswer = async (textInput) => {
+  const apiKey = process.env.TURING_BOT_API_KEY;
+  const result = await axios({
+    method: 'post',
+    url: 'http://openapi.tuling123.com/openapi/api/v2',
+    data: {
+      reqType: 0,
+      perception: {
+        inputText: {
+          text: textInput
+        }
+      },
+      userInfo: {
+        apiKey: apiKey,
+        userId: Math.random().toString(36).substring(2, 15)
+      }
+    }
+  });
+  if (result.data.results && result.data.results.length > 0) {
+    const firstTextResult = result.data.results.find((r) => r.values.text);
+    if (firstTextResult) {
+      return firstTextResult.values.text;
+    } else {
+      return undefined;
+    }
+  } else {
+    return undefined;
+  }
+};
+
 export const startBoltApp = async () => {
   const app = new bolt.App({
     token: process.env.SLACK_BOT_TOKEN,
@@ -49,5 +79,19 @@ export const startBoltApp = async () => {
   await app.start();
   app.message('vacation', handleVacation);
   app.message(bolt.directMention(), 'vacation', handleVacation);
+
+  app.message(async ({ message, say }) => {
+    console.dir(message);
+    await say('message received');
+  });
+
+  app.command('/addVacationGroup', async ({ command, ack, say }) => {
+    // Acknowledge command request
+    await ack();
+    console.dir(command);
+
+    await say(`${command.text}`);
+  });
+
   return app;
 };
