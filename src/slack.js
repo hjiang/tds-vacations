@@ -12,16 +12,29 @@ const handleVacation = async ({ say }) => {
   }
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const query = new LC.Query('Vacation');
+  let query = new LC.Query('Vacation');
   query.lessThanOrEqualTo('startDate', today);
   query.greaterThanOrEqualTo('endDate', today);
   try {
-    const results = await query.find();
+    let results = await query.find();
     if (results.length === 0) {
       await say('今天大家都在干活！');
       return;
     } else {
-      var resp = '今天有这些同事在休假中：\n';
+      let resp = '今天有这些同事在休假中：\n';
+      for (const result of results) {
+        const name = result.get('name');
+        const startDate = result.get('startDate').toDateString();
+        const endDate = result.get('endDate').toDateString();
+        resp += `${name}: ${startDate} ~ ${endDate}\n`;
+      }
+      await say(resp);
+    }
+    query = new LC.Query('Vacation');
+    query.greaterThan('startDate', today);
+    results = await query.find();
+    if (results.length > 0) {
+      let resp = '未来几天还有这些同事会休假：\n';
       for (const result of results) {
         const name = result.get('name');
         const startDate = result.get('startDate').toDateString();
@@ -84,11 +97,15 @@ export const startBoltApp = async () => {
   app.message(async ({ message, say }) => {
     if (message.text.indexOf('vacation') >= 0) return;
     console.dir(message);
-    const answer = turingBotAnswer(message.text);
-    if (answer) {
-      await say(answer);
-    } else {
-      await say('hmmm ...');
+    try {
+      const answer = await turingBotAnswer(message.text);
+      if (answer) {
+        await say(answer);
+      } else {
+        await say('hmmm ...');
+      }
+    } catch (e) {
+      console.error(e);
     }
   });
 
