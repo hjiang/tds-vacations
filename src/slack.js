@@ -39,7 +39,7 @@ const handleVacation = async ({ say }) => {
   }
 };
 
-const externalRobotAnswer = async (textInput) => {
+const turingBotAnswer = async (textInput) => {
   const apiKey = process.env.TURING_BOT_API_KEY;
   const result = await axios({
     method: 'post',
@@ -81,8 +81,14 @@ export const startBoltApp = async () => {
   app.message(bolt.directMention(), 'vacation', handleVacation);
 
   app.message(async ({ message, say }) => {
+    if (message.text.indexOf('vacation') >= 0) return;
     console.dir(message);
-    await say('message received');
+    const answer = turingBotAnswer(message.text);
+    if (answer) {
+      await say(answer);
+    } else {
+      await say('hmmm ...');
+    }
   });
 
   app.command('/addVacationGroup', async ({ command, ack, say }) => {
