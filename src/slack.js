@@ -19,7 +19,6 @@ const handleVacation = async ({ say }) => {
     let results = await query.find();
     if (results.length === 0) {
       await say('今天大家都在干活！');
-      return;
     } else {
       let resp = '今天有这些同事在休假中：\n';
       for (const result of results) {
