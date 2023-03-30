@@ -21,10 +21,15 @@ router.post('/email-hook', async (req, res, next) => {
   console.log(`Received message sent to ${recipient}`);
   // 您好： LeanCloud 部门的 发起了 xxxx 申请 休假 ，申请时间段为 2021/04/21 2021/04/21 ，时长为 0.5 天，请知晓。
   const text = req.body['stripped-text'];
+  if (!text) {
+    console.error('Received unexpected email: ', req.body);
+    res.status(400).end();
+    return;
+  }
   const { name, startDate, endDate } = extractVacationInfo(text);
   if (!name || !startDate || !endDate) {
     console.error(`Received unexpected email: ${text}`);
-    res.status(200).end();
+    res.status(400).end();
     return;
   }
 
